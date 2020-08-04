@@ -21,7 +21,7 @@ int main() {
     #endif
 
     // * Initializing the variables
-	int numberOfTestCases, n, m, arr[20], sum;
+	int numberOfTestCases, numberOfBankNotes, amountAskedByMuggers, bankNotesInWallet[20], sum, totalPermutations;
     bool sumFound;
 
     // * Accepting the number of test cases
@@ -33,22 +33,42 @@ int main() {
         // * Initializing sum found to false for the current test case
         sumFound = false;
 
-        // * Accepting the number of bank notes and the amount asked
-        cin>>n>>m;
-        for(int i=0; i<n; i++) {
-            cin>>arr[i];
+        // * Accepting the number of bank notes and the amount asked by muggers
+        cin>>numberOfBankNotes>>amountAskedByMuggers;
+
+        // * Accepting the value of each bank note one by one
+        for(int i=0; i<numberOfBankNotes; i++) {
+            cin>>bankNotesInWallet[i];
         }
-        for(int j=1; j<=pow(2,n); j++) {
+
+        // * Calculating the total permutations for number of bank notes
+        totalPermutations = pow(2, numberOfBankNotes);
+
+        // * Considering each permutation one by one
+        for(int j=1; j<=totalPermutations; j++) {
+
+            // * Initializing sum to 0
             sum=0;
-            for(int k=0;k<n;k++) {
+
+            // * Checking each bit from zero to number of bank notes in current permutation
+            for(int k=0; k<numberOfBankNotes; k++) {
+
+                /*
+                *   If kth bit of current permutation is set, add the
+                *   corresponding bank note value to sum
+                */
                 if((j>>(k)) & 1) {
-                    sum+=arr[k];
+                    sum+=bankNotesInWallet[k];
                 }
             }
-            if(sum==m) {
+
+            // * If sum is equal to amountAskedByMuggers, set sumFound variable to true
+            if(sum==amountAskedByMuggers) {
                 sumFound = true;
             }
         }
+
+        // * Print "Yes" for the current test case if sum found, otherwise print "No"
         if(sumFound) {
             cout<<"Yes"<<endl;
         } else {
