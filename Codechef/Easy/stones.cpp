@@ -26,7 +26,6 @@ int main() {
 
     // * Accepting the number of test cases
     cin>>numberOfTestCases;
-    getchar();
 
     // * Executing each test case one by one
     while(numberOfTestCases--) {
