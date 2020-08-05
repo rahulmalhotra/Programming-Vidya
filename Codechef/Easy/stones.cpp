@@ -22,7 +22,6 @@ int main() {
     // * Initializing variables
     int numberOfTestCases, count, jewelSize, stoneSize;
     string jewels, stones;
-    char ch;
 
     // * Accepting the number of test cases
     cin>>numberOfTestCases;
