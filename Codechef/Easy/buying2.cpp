@@ -43,7 +43,7 @@ int main() {
         *   calculating the total amount
         *   and minimum amount (minimum value bank note)
         */
-        for(int i=0; i<n; i++) {
+        for(int i=0; i<numberOfBankNotes; i++) {
             cin>>bankNotes[i];
             totalAmount += bankNotes[i];
             minAmount = min(minAmount, bankNotes[i]);
@@ -57,11 +57,11 @@ int main() {
         *   display the number of sweets purchased using the total amount
         */
         if(
-            totalAmount%x>=minAmount
+            totalAmount%priceOfSweet >= minAmount
         ) {
             cout<<"-1"<<endl;
         } else {
-            cout<<totalAmount/x<<endl;
+            cout<<totalAmount/priceOfSweet<<endl;
         }
     }
 }
