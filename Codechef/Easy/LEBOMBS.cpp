@@ -7,6 +7,7 @@
 */
 #include <iostream>
 #include <stdio.h>
+#include <bitset>
 using namespace std;
 
 int main() {
@@ -23,6 +24,7 @@ int main() {
     // * Initializing variables
     int numberOfTestCases, n, remainingBuildings;
     string s;
+    bitset<1000> buildings;
 
     // * Accepting the number of test cases
     cin>>numberOfTestCases;
@@ -32,6 +34,7 @@ int main() {
 
         // * Initialize the remaining buildings count to 0 for the current test case
         remainingBuildings = 0;
+        buildings.reset();
 
         // * Accepting the inputs for the current test case
         cin>>n>>s;
@@ -39,15 +42,17 @@ int main() {
         // * Marking the buildings that will explode for the current test case
         for(int i=0; i<n; i++) {
             if(s[i]=='1') {
-                s[i-1] = '1';
-                s[i+1] = '1';
-                i++;
+                buildings.set(i);
+                if(i>0)
+                buildings.set(i-1);
+                if(i<n-1)
+                buildings.set(i+1);
             }
         }
 
         // * Counting the buildings that will remain safe after all the bombs explode
         for(int i=0; i<n; i++) {
-            if(s[i]=='0') {
+            if(!buildings.test(i)) {
                 remainingBuildings++;
             }
         }
