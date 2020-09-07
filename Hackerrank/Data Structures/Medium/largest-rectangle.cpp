@@ -12,7 +12,7 @@ long largestRectangle(vector<int> h) {
     // * Initializing the variables
     int size = h.size();
     stack<int> s;
-    long maxArea = h[0], currentArea;
+    long maxArea = 0, currentArea;
 
     // * Adding 0 index to the stack initially
     s.push(0);
