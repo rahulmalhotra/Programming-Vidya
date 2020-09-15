@@ -1,85 +1,162 @@
-#include <iostream>
-#include <stdio.h>
-#include <vector>
+/*
+*   Author:- Rahul Malhotra
+*   Source:- Programming Vidya
+*   Description:- Solution for Codechef FLIPCOIN Problem
+*   Problem Link:- https://www.codechef.com/problems/FLIPCOIN
+*   Website:- www.programmingvidya.com
+*/
+#include<iostream>
+#include<vector>
+#include<stdio.h>
+
 using namespace std;
 
-class segmenttree {
+// * Class to create a segment tree
+class SegmentTree {
 
-    public:
+    // * Initializing variables
     vector<int> st;
+    int size;
 
-    segmenttree(int n) {
-        st.reserve(4*n);
-    }
+    // * Function to build a segment tree
+    void build(int start, int end, int index) {
 
-    void build(int a[], int start, int end, int index) {
-
+        // * Base Case - Leaf Node - Initialize with value 0
         if(start==end) {
-            st[index] = a[start];
+            st[index] = 0;
             return;
         }
 
-        // calculating mid
-        int mid = (start + end)/2;
+        // * Recursive Case
 
-        // left build
-        build(a, start, mid, 2*index + 1);
+        // * Calculating the mid point
+        int mid = (start+end)>>1;
 
-        // right build
-        build(a, mid+1, end, 2*index + 2);
+        // * Building Left Sub Tree
+        build(start, mid, (index<<1) + 1);
 
-        st[index] = st[index*2+1] + st[index*2+2];
+        // * Building Right Sub Tree
+        build(mid+1, end, (index<<1) + 2);
 
-        return;
+        /*
+        *   Setting up the value at current index
+        *   based on the left and right child node values
+        */
+        st[index] = st[(index<<1)+1] + st[(index<<1)+2];
     }
 
-    int query(int start, int end, int l, int r, int index) {
+    public:
 
-        // no overlap
-        if(l>end || r<start) {
+    // * Defining a constructor to build segment tree
+    SegmentTree(int n) {
+        size = 4*n;
+        st.reserve(size);
+        build(0, n-1, 0);
+    }
+
+    // * Method to lazy update the values in range
+    void updateRange(int lazy[], int start, int end, int l, int r, int index = 0) {
+
+        // * If the current index is marked as lazy
+        if(lazy[index]) {
+
+            // * Update the value for current index
+            st[index] = (end-start+1) - st[index];
+
+            // * Mark children for lazy update
+            if(start!=end) {
+                lazy[(index<<1) + 1] = 1 - lazy[(index<<1) + 1];
+                lazy[(index<<1) + 2] = 1 - lazy[(index<<1) + 2];
+            }
+
+            // * Remove the current index from lazy update array
+            lazy[index] = 0;
+        }
+
+        // * Out of Range
+        if(end<l || start>r) {
+            return;
+        }
+
+        // * Full Overlap
+        if(start>=l && end<=r) {
+
+            // * Update the value for current index
+            st[index] = (end-start+1) - st[index];
+
+            // * Mark children for Lazy Update and return
+            if(start!=end) {
+                lazy[(index<<1) + 1] = 1 - lazy[(index<<1) + 1];
+                lazy[(index<<1) + 2] = 1 - lazy[(index<<1) + 2];
+            }
+
+            return;
+        }
+
+        // * Partial Overlap
+        int mid = (start+end)>>1;
+
+        // * Update nodes in left subtree
+        updateRange(lazy, start, mid, l, r, (index<<1) + 1);
+
+        // * Update nodes in right subtree
+        updateRange(lazy, mid+1, end, l, r, (index<<1) + 2);
+
+        // * Update the value at current index
+        st[index] = st[(index<<1)+1] + st[(index<<1)+2];
+    }
+
+    // * Method to lazy query the values in range
+    int queryRange(int lazy[], int start, int end, int l, int r, int index = 0) {
+
+        // * Out of Range
+        if(end<l || start>r) {
             return 0;
         }
 
-        // full overlap
+        // * If the current index is marked as lazy
+        if(lazy[index]) {
+
+            // * Update the value for current index
+            st[index] = (end-start+1) - st[index];
+
+            // * Mark children for lazy update
+            if(start!=end) {
+                lazy[(index<<1) + 1] = 1 - lazy[(index<<1) + 1];
+                lazy[(index<<1) + 2] = 1 - lazy[(index<<1) + 2];
+            }
+
+            // * Remove the current index from lazy update array
+            lazy[index] = 0;
+        }
+
+        // * Full Overlap
         if(start>=l && end<=r) {
+
+            // * Return the value for current index
             return st[index];
         }
 
-        // partial overlap
-        int mid = (start+end)/2;
+        // * Partial Overlap
+        int mid = (start+end)>>1;
 
-        // left query
-        int left = query(start, mid, l, r, 2*index + 1);
+        // * Getting value from left subtree
+        int left = queryRange(lazy, start, mid, l, r, (index<<1) + 1);
 
-        // right query
-        int right = query(mid+1, end, l, r, 2*index + 2);
+        // * Getting value from right subtree
+        int right = queryRange(lazy, mid+1, end, l, r, (index<<1) + 2);
 
+        // * Returning the sum of values from left and right subtree
         return left + right;
     }
 
-    void update(int a[], int start, int end, int indexToUpdate, int value, int index) {
-
-        if(start==end) {
-            st[indexToUpdate] = value;
-            a[indexToUpdate] = value;
-            return;
+    // * Method to display the Segment Tree
+    void display() {
+        for(int i=0; i<size; i++) {
+            cout<<st[i]<<" ";
         }
-
-        int mid = (start+end)/2;
-
-        if(indexToUpdate<=mid) {
-            // move to left sub tree
-            update(a, start, mid, indexToUpdate, value, 2*index + 1);
-        } else {
-            // move to right sub tree
-            update(a, mid+1, end, indexToUpdate, value, 2*index + 2);
-        }
-
-        st[index] = st[2*index + 1] + st[index*2 + 2];
-
-        return;
+        cout<<endl;
     }
-
 };
 
 int main() {
@@ -93,53 +170,34 @@ int main() {
     freopen("output.txt", "w", stdout);
     #endif
 
-    /*
-    int n;
-    cin>>n;
+    // * Initializing the variables
+    int n, q, x, a, b;
 
-    int a[n];
-    for(int i=0; i<n; i++) {
-        cin>>a[i];
-    }
-
-    segmenttree tree(n);
-    tree.build(a, 0, n-1, 0);
-
-    for(int i=0; i<4*n; i++) {
-        cout<<tree.st[i]<<" ";
-    }
-
-    cout<<endl;
-    cout<<tree.query(0, n-1, 0, 7, 0)<<endl;
-    cout<<tree.query(0, n-1, 1, 7, 0)<<endl;
-    cout<<tree.query(0, n-1, 5, 5, 0)<<endl;
-
-    tree.update(a, 0, 7, 0, 2, 0);
-    cout<<tree.query(0, n-1, 0, 7, 0)<<endl;
-    */
-
-    int n, q, x, a, b, val;
+    // * Accepting the number of elements and number of queries
     cin>>n>>q;
 
-    int arr[n] = {0};
+    /*
+    *   Creating a segment tree with n 0s and
+    *   initializing the lazy array of size (4*n) with 0
+    */
+    SegmentTree s(n);
+    int lazy[4*n] = {0};
 
-    segmenttree tree(n);
-    tree.build(arr, 0, n-1, 0);
-
+    // * Executing each query one by one
     while(q--) {
+
+        // * Accepting the values for type of operation and the range endpoints A and B
         cin>>x>>a>>b;
-        if(x==0) {
-            for(int i=a; i<=b; i++) {
-                cout<<arr[i]<<" ";
-                val = 0;
-                if(arr[i]==0) {
-                    val = 1;
-                }
-                tree.update(arr, 0, n-1, i, val, 0);
-            }
-            cout<<endl;
+
+        // * If x==1
+        if(x) {
+
+            // * Display elements in range a to b
+            cout<<s.queryRange(lazy, 0, n-1, a, b)<<endl;
         } else {
-            cout<<tree.query(0, n-1, a, b, 0)<<endl;
+
+            // * Update elements in range a to b
+            s.updateRange(lazy, 0, n-1, a, b);
         }
     }
 }
