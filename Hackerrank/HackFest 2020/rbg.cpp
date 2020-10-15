@@ -194,6 +194,7 @@ vector<string> mixColors(vector<vector<int>> colors, vector<vector<int>> queries
     return result;
 }
 
+// * Main function and other code given by HackerRank
 int main()
 {
     ofstream fout(getenv("OUTPUT_PATH"));
