@@ -17,7 +17,7 @@ string superReducedString(string s) {
     stack<char> st;
 
     // * Checking each character of the string one by one
-    for(int i=0; i<length-1; i++) {
+    for(int i=0; i<length; i++) {
 
         // * If the stack is not empty
         if(!st.empty()) {
@@ -52,7 +52,7 @@ string superReducedString(string s) {
     reverse(result.begin(), result.end());
 
     // * Return the result string
-    return result;
+    return result == "" ? "Empty String" : result;
 }
 
 // * Main function as given by HackerRank
