@@ -1,7 +1,7 @@
 /*
 *   Author:- Rahul Malhotra
 *   Source:- Programming Vidya
-*   Description:- Solution for HackerRank Ice Cream Parlour problem
+*   Description:- Solution for HackerRank Ice Cream Parlor problem
 *   Problem Link:- https://www.hackerrank.com/challenges/icecream-parlor/problem
 *   Website:- www.programmingvidya.com
 */
