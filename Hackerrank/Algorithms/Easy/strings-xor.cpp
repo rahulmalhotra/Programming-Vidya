@@ -5,7 +5,7 @@
 *   Problem Link:- https://www.hackerrank.com/challenges/strings-xor/problem
 *   Website:- www.programmingvidya.com
 *   Code Updates:-
-*   Updated = to == on line number 22
+*   Updated = to == on line number 23
 *   Updated = to += on line number 24 and 26
 */
 
